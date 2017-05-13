@@ -163,6 +163,7 @@ static void rtw_dev_remove(struct usb_interface *pusb_intf);
 	{USB_DEVICE(0x06F8, 0xE035)}, /* Hercules - Edimax */ \
 	{USB_DEVICE(0x04BB, 0x0950)}, /* IO-DATA - Edimax */ \
 	{USB_DEVICE(0x0DF6, 0x0070)}, /* Sitecom - Edimax */ \
+	{USB_DEVICE(0x0DF6, 0x0077)}, /* Sitecom - Edimax */ \
 	{USB_DEVICE(0x0789, 0x016D)}, /* LOGITEC - Edimax */ \
 	/****** 8192CE-VAU  ********/ \
 	{USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8186)},/* Intel-Xavi( Azwave) */
