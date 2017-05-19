@@ -780,6 +780,10 @@ __inline static void _set_workitem(_workitem *pwork)
 #endif
 	#include <linux/sem.h>
 	#include <linux/sched.h>
+/* Linux 4.11 moves signal function declarations to its own header file */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0)
+    #include <linux/sched/signal.h>
+#endif
 	#include <linux/etherdevice.h>
 	#include <linux/wireless.h>
 	#include <net/iw_handler.h>
