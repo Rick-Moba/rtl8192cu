@@ -98,7 +98,7 @@ typedef struct cmd_tlv {
 typedef struct android_wifi_priv_cmd {
 
 #ifdef CONFIG_COMPAT
-	compat_uptr_t buf;
+	void * buf;
 #else
 	char *buf;
 #endif
