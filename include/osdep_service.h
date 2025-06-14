@@ -1470,8 +1470,11 @@ extern void	rtw_udelay_os(int us);
 
 extern void rtw_yield_os(void);
 
-
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
 __inline static unsigned char del_timer(_timer *ptimer)
+#else
+__inline static unsigned char _cancel_timer_ex(_timer *ptimer)
+#endif
 {
 #ifdef PLATFORM_LINUX
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
