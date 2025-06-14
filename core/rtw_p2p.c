@@ -5314,11 +5314,11 @@ int rtw_p2p_enable(_adapter *padapter, enum P2P_ROLE role)
 		//Disable P2P function
 		if(!rtw_p2p_chk_state(pwdinfo, P2P_STATE_NONE))
 		{
-			_cancel_timer_ex( &pwdinfo->find_phase_timer );
-			_cancel_timer_ex( &pwdinfo->restore_p2p_state_timer );
-			_cancel_timer_ex( &pwdinfo->pre_tx_scan_timer);
-			_cancel_timer_ex( &pwdinfo->reset_ch_sitesurvey);
-			_cancel_timer_ex( &pwdinfo->reset_ch_sitesurvey2);
+			del_timer( &pwdinfo->find_phase_timer );
+			del_timer( &pwdinfo->restore_p2p_state_timer );
+			del_timer( &pwdinfo->pre_tx_scan_timer);
+			del_timer( &pwdinfo->reset_ch_sitesurvey);
+			del_timer( &pwdinfo->reset_ch_sitesurvey2);
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 15, 0)
                         reset_ch_sitesurvey_timer_process( padapter );
                         reset_ch_sitesurvey_timer_process2( padapter );
@@ -5327,7 +5327,7 @@ int rtw_p2p_enable(_adapter *padapter, enum P2P_ROLE role)
                         reset_ch_sitesurvey_timer_process(&padapter->wdinfo.reset_ch_sitesurvey2);
 #endif
 			#ifdef CONFIG_CONCURRENT_MODE			
-			_cancel_timer_ex( &pwdinfo->ap_p2p_switch_timer);
+			del_timer( &pwdinfo->ap_p2p_switch_timer);
 			#endif
 			rtw_p2p_set_state(pwdinfo, P2P_STATE_NONE);
 			rtw_p2p_set_role(pwdinfo, P2P_ROLE_DISABLE);

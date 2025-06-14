@@ -4618,7 +4618,7 @@ void rtl8192c_deinit_dm_priv(IN PADAPTER Adapter)
 	struct dm_priv	*pdmpriv = &pHalData->dmpriv;
 
 #ifdef CONFIG_SW_ANTENNA_DIVERSITY
-	_cancel_timer_ex(&pdmpriv->SwAntennaSwitchTimer);
+	del_timer(&pdmpriv->SwAntennaSwitchTimer);
 #endif
 }
 #ifdef CONFIG_HW_ANTENNA_DIVERSITY

@@ -3785,7 +3785,7 @@ int recv_indicatepkt_reorder(_adapter *padapter, union recv_frame *prframe)
 	else
 	{
 		_exit_critical_bh(&ppending_recvframe_queue->lock, &irql);
-		_cancel_timer_ex(&preorder_ctrl->reordering_ctrl_timer);
+		del_timer(&preorder_ctrl->reordering_ctrl_timer);
 	}
 
 

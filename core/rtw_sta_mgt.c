@@ -300,7 +300,7 @@ _func_enter_;
 				for(i=0; i < 16 ; i++)
 				{
 					preorder_ctrl = &psta->recvreorder_ctrl[i];
-					_cancel_timer_ex(&preorder_ctrl->reordering_ctrl_timer);	
+					del_timer(&preorder_ctrl->reordering_ctrl_timer);	
 				}
 			}
 		}
@@ -531,15 +531,15 @@ _func_enter_;
 	//_rtw_init_sta_xmit_priv(&psta->sta_xmitpriv);
 	//_rtw_init_sta_recv_priv(&psta->sta_recvpriv);
 
-	_cancel_timer_ex(&psta->addba_retry_timer);
+	del_timer(&psta->addba_retry_timer);
 
 #ifdef CONFIG_TDLS
-	_cancel_timer_ex(&psta->TPK_timer);
-	_cancel_timer_ex(&psta->option_timer);
-	_cancel_timer_ex(&psta->base_ch_timer);
-	_cancel_timer_ex(&psta->off_ch_timer);
-	_cancel_timer_ex(&psta->alive_timer1);
-	_cancel_timer_ex(&psta->alive_timer2);
+	del_timer(&psta->TPK_timer);
+	del_timer(&psta->option_timer);
+	del_timer(&psta->base_ch_timer);
+	del_timer(&psta->off_ch_timer);
+	del_timer(&psta->alive_timer1);
+	del_timer(&psta->alive_timer2);
 #endif //CONFIG_TDLS
 
 	//for A-MPDU Rx reordering buffer control, cancel reordering_ctrl_timer
@@ -553,7 +553,7 @@ _func_enter_;
 	
 		preorder_ctrl = &psta->recvreorder_ctrl[i];
 		
-		_cancel_timer_ex(&preorder_ctrl->reordering_ctrl_timer);		
+		del_timer(&preorder_ctrl->reordering_ctrl_timer);		
 
 		
 		ppending_recvframe_queue = &preorder_ctrl->pending_recvframe_queue;
