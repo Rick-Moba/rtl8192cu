@@ -3903,6 +3903,7 @@ int process_recv_indicatepkts(_adapter *padapter, union recv_frame *prframe)
 
 }
 
+int recv_func_prehandle(_adapter *padapter, union recv_frame *rframe);
 int recv_func_prehandle(_adapter *padapter, union recv_frame *rframe)
 {
 	int ret = _SUCCESS;
@@ -3944,6 +3945,7 @@ exit:
 	return ret;
 }
 
+int recv_func_posthandle(_adapter *padapter, union recv_frame *prframe);
 int recv_func_posthandle(_adapter *padapter, union recv_frame *prframe)
 {
 	int ret = _SUCCESS;
@@ -4211,7 +4213,11 @@ void rtw_signal_stat_timer_hdl(struct timer_list *t)
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 15, 0)
         _adapter *adapter = (_adapter *)FunctionContext;
 #else
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0))
+	_adapter *adapter = timer_container_of(adapter, t, recvpriv.signal_stat_timer);
+#else
         _adapter *adapter = from_timer(adapter, t, recvpriv.signal_stat_timer);
+#endif
 #endif
 	struct recv_priv *recvpriv = &adapter->recvpriv;
 	

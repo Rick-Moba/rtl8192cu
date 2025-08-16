@@ -1291,7 +1291,11 @@ void BlinkTimerCallback(void * data)
 #else
 void BlinkTimerCallback(struct timer_list *t)
 {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0))
+        PLED_871x         pLed = timer_container_of(pLed, t, BlinkTimer);
+#else
         PLED_871x         pLed = from_timer(pLed, t, BlinkTimer);
+#endif
 #endif
 	_adapter		*padapter = pLed->padapter;
 
@@ -2651,6 +2655,10 @@ LedControl871x(
 void
 rtl8192cu_InitSwLeds(
 	_adapter	*padapter
+	);
+void
+rtl8192cu_InitSwLeds(
+	_adapter	*padapter
 	)
 {
 	struct led_priv *pledpriv = &(padapter->ledpriv);
@@ -2667,6 +2675,10 @@ rtl8192cu_InitSwLeds(
 //	Description:
 //		DeInitialize all LED_819xUsb objects.
 //
+void
+rtl8192cu_DeInitSwLeds(
+	_adapter	*padapter
+	);
 void
 rtl8192cu_DeInitSwLeds(
 	_adapter	*padapter

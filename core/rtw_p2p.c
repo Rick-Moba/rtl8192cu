@@ -25,6 +25,7 @@
 
 #ifdef CONFIG_P2P
 
+int rtw_p2p_is_channel_list_ok( u8 desired_ch, u8* ch_list, u8 ch_cnt );
 int rtw_p2p_is_channel_list_ok( u8 desired_ch, u8* ch_list, u8 ch_cnt )
 {
 	int found = 0, i = 0;
@@ -40,6 +41,7 @@ int rtw_p2p_is_channel_list_ok( u8 desired_ch, u8* ch_list, u8 ch_cnt )
 	return( found );
 }
 
+int is_any_client_associated(_adapter *padapter);
 int is_any_client_associated(_adapter *padapter)
 {
 	return padapter->stapriv.asoc_list_cnt ? _TRUE : _FALSE;
@@ -2644,6 +2646,7 @@ u8 process_p2p_provdisc_resp(struct wifidirect_info *pwdinfo,  u8 *pframe)
 	return _TRUE;
 }
 
+u8 rtw_p2p_get_peer_ch_list(struct wifidirect_info *pwdinfo, u8 *ch_content, u8 ch_cnt, u8 *peer_ch_list);
 u8 rtw_p2p_get_peer_ch_list(struct wifidirect_info *pwdinfo, u8 *ch_content, u8 ch_cnt, u8 *peer_ch_list)
 {
 	u8 i = 0, j = 0;
@@ -2669,6 +2672,7 @@ u8 rtw_p2p_get_peer_ch_list(struct wifidirect_info *pwdinfo, u8 *ch_content, u8 
 	return ch_no;
 }
 
+u8 rtw_p2p_check_peer_oper_ch(struct mlme_ext_priv *pmlmeext, u8 ch);
 u8 rtw_p2p_check_peer_oper_ch(struct mlme_ext_priv *pmlmeext, u8 ch)
 {
 	u8 i = 0;
@@ -2684,6 +2688,7 @@ u8 rtw_p2p_check_peer_oper_ch(struct mlme_ext_priv *pmlmeext, u8 ch)
 	return _FAIL;
 }
 
+u8 rtw_p2p_ch_inclusion(struct mlme_ext_priv *pmlmeext, u8 *peer_ch_list, u8 peer_ch_num, u8 *ch_list_inclusioned);
 u8 rtw_p2p_ch_inclusion(struct mlme_ext_priv *pmlmeext, u8 *peer_ch_list, u8 peer_ch_num, u8 *ch_list_inclusioned)
 {
 	int	i = 0, j = 0, temp = 0;
@@ -3317,6 +3322,7 @@ u8 process_p2p_presence_req(struct wifidirect_info *pwdinfo, u8 *pframe, uint le
 	return _TRUE;
 }
 
+void find_phase_handler( _adapter*	padapter );
 void find_phase_handler( _adapter*	padapter )
 {
 	struct wifidirect_info  *pwdinfo = &padapter->wdinfo;
@@ -3343,6 +3349,7 @@ _func_exit_;
 
 void p2p_concurrent_handler(  _adapter* padapter );
 
+void restore_p2p_state_handler( _adapter*	padapter );
 void restore_p2p_state_handler( _adapter*	padapter )
 {
 	struct wifidirect_info  *pwdinfo = &padapter->wdinfo;
@@ -3386,6 +3393,7 @@ _func_enter_;
 _func_exit_;
 }
 
+void pre_tx_invitereq_handler( _adapter*	padapter );
 void pre_tx_invitereq_handler( _adapter*	padapter )
 {
 	struct wifidirect_info  *pwdinfo = &padapter->wdinfo;
@@ -3400,6 +3408,7 @@ _func_enter_;
 _func_exit_;
 }
 
+void pre_tx_provdisc_handler( _adapter*	padapter );
 void pre_tx_provdisc_handler( _adapter*	padapter )
 {
 	struct wifidirect_info  *pwdinfo = &padapter->wdinfo;
@@ -3414,6 +3423,7 @@ _func_enter_;
 _func_exit_;
 }
 
+void pre_tx_negoreq_handler( _adapter*	padapter );
 void pre_tx_negoreq_handler( _adapter*	padapter )
 {
 	struct wifidirect_info  *pwdinfo = &padapter->wdinfo;
@@ -4701,7 +4711,11 @@ static void reset_ch_sitesurvey_timer_process(struct timer_list *t)
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 15, 0)
         _adapter *adapter = (_adapter *)FunctionContext;
 #else
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0))
+        _adapter *adapter = timer_container_of(adapter, t, wdinfo.reset_ch_sitesurvey);
+#else
         _adapter *adapter = from_timer(adapter, t, wdinfo.reset_ch_sitesurvey);
+#endif
 #endif
 	struct	wifidirect_info		*pwdinfo = &adapter->wdinfo;
 
@@ -4728,7 +4742,11 @@ static void reset_ch_sitesurvey_timer_process2(struct timer_list *t)
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 15, 0)
         _adapter *adapter = (_adapter *)FunctionContext;
 #else
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0))
+        _adapter *adapter = timer_container_of(adapter, t, wdinfo.reset_ch_sitesurvey2);
+#else
         _adapter *adapter = from_timer(adapter, t, wdinfo.reset_ch_sitesurvey2);
+#endif
 #endif
 	struct	wifidirect_info		*pwdinfo = &adapter->wdinfo;
 
@@ -4755,7 +4773,11 @@ static void restore_p2p_state_timer_process(struct timer_list *t)
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 15, 0)
         _adapter *adapter = (_adapter *)FunctionContext;
 #else
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0))
+        _adapter *adapter = timer_container_of(adapter, t, wdinfo.restore_p2p_state_timer);
+#else
         _adapter *adapter = from_timer(adapter, t, wdinfo.restore_p2p_state_timer);
+#endif
 #endif
 	struct	wifidirect_info		*pwdinfo = &adapter->wdinfo;
 
@@ -4774,7 +4796,11 @@ static void pre_tx_scan_timer_process(struct timer_list *t)
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 15, 0)
         _adapter *adapter = (_adapter *) FunctionContext;
 #else
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0))
+        _adapter *adapter = timer_container_of(adapter, t, wdinfo.pre_tx_scan_timer);
+#else
         _adapter *adapter = from_timer(adapter, t, wdinfo.pre_tx_scan_timer);
+#endif
 #endif
 	struct	wifidirect_info				*pwdinfo = &adapter->wdinfo;
 	_irqL							irqL;
@@ -4831,7 +4857,11 @@ static void find_phase_timer_process(struct timer_list *t)
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 15, 0)
         _adapter *adapter = (_adapter *)FunctionContext;
 #else
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0))
+        _adapter *adapter = timer_container_of(adapter, t, wdinfo.find_phase_timer);
+#else
         _adapter *adapter = from_timer(adapter, t, wdinfo.find_phase_timer);
+#endif
 #endif
 	struct	wifidirect_info		*pwdinfo = &adapter->wdinfo;
 
@@ -4853,7 +4883,11 @@ void ap_p2p_switch_timer_process(struct timer_list *t)
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 15, 0)
         _adapter *adapter = (_adapter *)FunctionContext;
 #else
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0))
+        _adapter *adapter = timer_container_of(adapter, t, wdinfo.ap_p2p_switch_timer);
+#else
         _adapter *adapter = from_timer(adapter, t, wdinfo.ap_p2p_switch_timer);
+#endif
 #endif
 	struct	wifidirect_info		*pwdinfo = &adapter->wdinfo;
 #ifdef CONFIG_IOCTL_CFG80211	

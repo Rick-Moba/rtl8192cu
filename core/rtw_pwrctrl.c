@@ -107,6 +107,7 @@ int rtw_hw_suspend(_adapter *padapter );
 int rtw_hw_resume(_adapter *padapter);
 #endif
 
+bool rtw_pwr_unassociated_idle(_adapter *adapter);
 bool rtw_pwr_unassociated_idle(_adapter *adapter)
 {
 	_adapter *buddy = adapter->pbuddy_adapter;
@@ -291,15 +292,21 @@ exit:
 }
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 15, 0)
+void pwr_state_check_handler(RTW_TIMER_HDL_ARGS);
 void pwr_state_check_handler(RTW_TIMER_HDL_ARGS)
 #else
+void pwr_state_check_handler(struct timer_list *t);
 void pwr_state_check_handler(struct timer_list *t)
 #endif
 {
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 15, 0)
         _adapter *padapter = (_adapter *)FunctionContext;
 #else
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0))
+	_adapter *padapter = timer_container_of(padapter, t, pwrctrlpriv.pwr_state_check_timer);
+#else
         _adapter *padapter = from_timer(padapter, t, pwrctrlpriv.pwr_state_check_timer);
+#endif
 #endif
         rtw_ps_cmd(padapter);
 }
